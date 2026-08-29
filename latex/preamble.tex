@@ -1,0 +1,44 @@
+% Shared presentation layer for long-form research artifacts.
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{fvextra}
+
+\definecolor{artifactInk}{HTML}{172033}
+\definecolor{artifactAccent}{HTML}{315B7D}
+\definecolor{artifactMuted}{HTML}{687387}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em plus 0.15em minus 0.1em}
+\setlength{\headheight}{15pt}
+\setcounter{tocdepth}{2}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\small}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{artifactInk}}
+  {\color{artifactAccent}\Large\chaptername\ \thechapter}
+  {0.35em}
+  {\Huge}
+\titleformat{\section}
+  {\Large\bfseries\color{artifactInk}}
+  {\thesection}{0.7em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{artifactAccent}}
+  {\thesubsection}{0.7em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{artifactMuted}\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{artifactMuted}Research Folio}
+\fancyfoot[C]{\small\color{artifactMuted}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\small\color{artifactMuted}\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}

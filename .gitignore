@@ -1,0 +1,32 @@
+# Dependencies and local toolchains
+node_modules/
+.tools/
+
+# Cloudflare and local credentials
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+!.dev.vars.example
+
+# Generated artifacts and scratch files
+output/
+tmp/
+
+# Logs, coverage, and caches
+*.log
+coverage/
+.cache/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local agent state
+.claude/
+.codex/
