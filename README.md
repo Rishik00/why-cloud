@@ -54,15 +54,7 @@ SKILL.md                 Instructions for coding agents operating Folio
    npm run typecheck
    ```
 
-4. Configure the browser upload key for local development:
-
-   ```powershell
-   Copy-Item .dev.vars.example .dev.vars
-   ```
-
-   `.dev.vars` must contain `ADMIN_TOKEN=<long random passphrase>`. This is the same secret name used in production. Never commit `.dev.vars`.
-
-5. Start the local Worker and frontend:
+4. Start the local Worker and frontend:
 
    ```powershell
    npm run dev
@@ -70,14 +62,13 @@ SKILL.md                 Instructions for coding agents operating Folio
 
    This serves `http://localhost:8787` against a local simulated R2 bucket under `.wrangler/`. Local uploads do not enter the production `folio` bucket. Use `npx wrangler dev --remote` only when you intentionally want local code to access the real bucket.
 
-6. Deploy the Worker, then store the production upload key:
+5. Deploy the Worker:
 
    ```powershell
    npm run deploy
-   npm run secret:admin
    ```
 
-Wrangler prompts for `ADMIN_TOKEN` without writing it to the repository. The deployed Worker receives private R2 access through the `BUCKET` binding; R2 access keys are not required by the app.
+The deployed Worker receives private R2 access through the `BUCKET` binding; R2 access keys are not required by the app.
 
 ## Build an artifact
 
@@ -142,7 +133,7 @@ The stable reading link is then:
 https://<worker-name>.<workers-subdomain>.workers.dev/a/on-policy-distillation
 ```
 
-The browser upload form offers the same PDF workflow using `ADMIN_TOKEN`. The key is cleared after a successful upload and is not written to browser storage.
+The browser upload form offers the same PDF workflow directly through the Worker.
 
 ## Routes
 
@@ -150,7 +141,7 @@ The browser upload form offers the same PDF workflow using `ADMIN_TOKEN`. The ke
 |---|---|---|
 | `/` | `GET` | Folio interface |
 | `/api/artifacts` | `GET` | List published PDF artifacts |
-| `/api/artifacts/:slug` | `PUT` | Upload a new PDF with a bearer admin token |
+| `/api/artifacts/:slug` | `PUT` | Upload a new PDF |
 | `/a/:slug` | `GET`, `HEAD` | Stream an inline PDF with range support |
 | `/health` | `GET`, `HEAD` | Worker health check |
 
@@ -159,13 +150,10 @@ Only PDF objects matching the expected artifact key are publicly routed. LaTeX s
 ## Security notes
 
 - Keep the R2 bucket private.
-- Store production secrets with `wrangler secret put`, never in `wrangler.jsonc`.
-- Treat `ADMIN_TOKEN` as a password and rotate it if exposed.
+- The upload endpoint is intentionally unauthenticated.
 - PDF uploads are limited to an enforced 95 MB stream length, checked for a PDF signature, and created only when the slug does not already exist.
 - Artifact slugs are restricted to lowercase letters, numbers, and internal hyphens, up to 80 characters.
-- Upload secrets are compared as fixed-size SHA-256 digests using a timing-safe comparison.
 - The UI renders R2 metadata with DOM text nodes rather than HTML injection.
-- This is a single-owner tool. Add an identity-aware access layer before using it as a multi-user service.
 
 ## Verification
 

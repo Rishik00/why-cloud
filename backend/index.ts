@@ -2,7 +2,6 @@ const ARTIFACT_PATH = /^\/a\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const API_ARTIFACT_PATH = /^\/api\/artifacts\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const MAX_SLUG_LENGTH = 80;
 const MAX_UPLOAD_BYTES = 95 * 1024 * 1024;
-const textEncoder = new TextEncoder();
 
 function jsonError(message: string, status: number, extraHeaders?: HeadersInit): Response {
   return Response.json(
@@ -100,19 +99,6 @@ function preconditionStatus(request: Request): 304 | 412 {
   return request.headers.has("if-match") || request.headers.has("if-unmodified-since")
     ? 412
     : 304;
-}
-
-async function isAuthorized(request: Request, env: Env): Promise<boolean> {
-  const expected = env.ADMIN_TOKEN;
-  const authorization = request.headers.get("authorization");
-  if (!expected) return false;
-
-  const provided = authorization?.startsWith("Bearer ") ? authorization.slice(7) : "";
-  const [expectedHash, providedHash] = await Promise.all([
-    crypto.subtle.digest("SHA-256", textEncoder.encode(expected)),
-    crypto.subtle.digest("SHA-256", textEncoder.encode(provided)),
-  ]);
-  return crypto.subtle.timingSafeEqual(expectedHash, providedHash);
 }
 
 async function inspectPdfStream(body: ReadableStream<Uint8Array>): Promise<{
@@ -228,13 +214,6 @@ async function listArtifacts(env: Env): Promise<Response> {
 }
 
 async function uploadArtifact(request: Request, env: Env, slug: string): Promise<Response> {
-  if (!env.ADMIN_TOKEN) return jsonError("Upload access is not configured", 503);
-  if (!await isAuthorized(request, env)) {
-    return jsonError("The access key is incorrect", 401, {
-      "www-authenticate": 'Bearer realm="folio"',
-    });
-  }
-
   const contentType = request.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
   if (contentType !== "application/pdf") {
     return jsonError("Choose a PDF file", 415);

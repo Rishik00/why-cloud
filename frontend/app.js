@@ -14,7 +14,6 @@ const form = $("#upload-form");
 const fileInput = $("#pdf-file");
 const titleInput = $("#artifact-title");
 const slugInput = $("#artifact-slug");
-const tokenInput = $("#admin-token");
 const status = $("#form-status");
 const list = $("#folio-list");
 const listStatus = $("#library-status");
@@ -278,7 +277,6 @@ form.addEventListener("submit", async (event) => {
 
   const slug = slugify(slugInput.value);
   const title = titleInput.value.trim();
-  let token = tokenInput.value;
   if (!slug) {
     setStatus("Enter a short link using letters or numbers.", true);
     return;
@@ -291,7 +289,6 @@ form.addEventListener("submit", async (event) => {
     const response = await fetch(`/api/artifacts/${encodeURIComponent(slug)}`, {
       method: "PUT",
       headers: {
-        "authorization": `Bearer ${token}`,
         "content-type": "application/pdf",
         "x-artifact-title": encodeURIComponent(title),
       },
@@ -305,7 +302,6 @@ form.addEventListener("submit", async (event) => {
     }
 
     form.reset();
-    token = "";
     state.file = null;
     slugInput.dataset.edited = "false";
     $("#file-name").textContent = "Choose a PDF";

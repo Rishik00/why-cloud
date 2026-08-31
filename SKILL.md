@@ -34,7 +34,6 @@ Work from the repository root. Read `README.md`, `wrangler.jsonc`, and the files
 
 - Run `npm run dev` to serve `http://localhost:8787` with simulated R2 data under `.wrangler/`.
 - Run `npx wrangler dev --remote` only when the task explicitly requires the real bucket.
-- Keep `ADMIN_TOKEN` in `.dev.vars` for local browser uploads. Never read the value back into output or logs.
 
 ## Upload artifacts with Wrangler
 
@@ -63,9 +62,8 @@ Work from the repository root. Read `README.md`, `wrangler.jsonc`, and the files
 
 ## Use the browser upload
 
-- Open the Folio root, choose a PDF, enter its title and slug, and provide `ADMIN_TOKEN` in the upload-key field.
+- Open the Folio root, choose a PDF, enter its title and slug, and publish it.
 - Expect `201` for a new artifact, `409` for an existing slug, `413` above 95 MB, and `415` for a non-PDF body.
-- Clear the upload key after success. Never obtain it by reading `.dev.vars` or another secret store.
 
 ## Verify every upload
 
@@ -91,13 +89,12 @@ Work from the repository root. Read `README.md`, `wrangler.jsonc`, and the files
 
 1. Keep frontend code in `frontend/` and Worker code in `backend/`.
 2. Validate untrusted JSON before using it and render text with `textContent`, not `innerHTML`.
-3. Keep secrets in `.dev.vars` locally and set production secrets with `wrangler secret put`.
-4. Preserve `onlyIf: { etagDoesNotMatch: "*" }` on R2 uploads to prevent silent replacement.
-5. Regenerate binding types after configuration changes:
+3. Preserve `onlyIf: { etagDoesNotMatch: "*" }` on R2 uploads to prevent silent replacement.
+4. Regenerate binding types after configuration changes:
 
    ```powershell
    npm run types
    ```
 
-6. Run `npm run typecheck`, `npx wrangler deploy --dry-run`, and `npm audit` before deployment.
-7. Deploy only when the user asks for a production change.
+5. Run `npm run typecheck`, `npx wrangler deploy --dry-run`, and `npm audit` before deployment.
+6. Deploy only when the user asks for a production change.
