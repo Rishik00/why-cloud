@@ -5,9 +5,6 @@ const state = {
   file: null,
   lastUrl: "",
   view: 0,
-  isAnimating: false,
-  touchStartY: 0,
-  touchStartedInList: false,
 };
 
 const form = $("#upload-form");
@@ -21,27 +18,33 @@ const search = $("#search");
 const dropZone = $("#drop-zone");
 const deck = $("#deck");
 const uploadView = $("#upload-view");
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const libraryView = $("#library");
+const libraryHeading = $(".library-heading");
+const searchToggle = $("#search-toggle");
 
 function setView(nextView, moveFocus = false) {
-  if (nextView === state.view || state.isAnimating) return;
+  if (nextView === state.view) return;
   state.view = nextView;
-  state.isAnimating = true;
   deck.dataset.view = String(nextView);
-  if (nextView === 0) uploadView.scrollTop = 0;
-
-  const unlock = (event) => {
-    if (event && event.target !== deck) return;
-    state.isAnimating = false;
-    deck.removeEventListener("transitionend", unlock);
-  };
-  deck.addEventListener("transitionend", unlock);
-  window.setTimeout(() => unlock(), reducedMotion.matches ? 50 : 820);
+  uploadView.hidden = nextView !== 0;
+  libraryView.hidden = nextView !== 1;
+  window.scrollTo({ top: 0, behavior: "instant" });
 
   if (moveFocus) {
-    window.setTimeout(() => {
-      (nextView === 1 ? $("#library") : $("#upload-view")).focus();
-    }, reducedMotion.matches ? 0 : 700);
+    (nextView === 1 ? libraryView : uploadView).focus({ preventScroll: true });
+  }
+}
+
+function toggleSearch() {
+  const isOpen = searchToggle.getAttribute("aria-expanded") === "true";
+  const nextOpen = !isOpen;
+  searchToggle.setAttribute("aria-expanded", String(nextOpen));
+  libraryHeading.classList.toggle("is-searching", nextOpen);
+  if (nextOpen) {
+    window.setTimeout(() => search.focus(), 180);
+  } else {
+    search.value = "";
+    renderArtifacts();
   }
 }
 
@@ -197,6 +200,7 @@ slugInput.addEventListener("input", () => {
   slugInput.value = slugify(slugInput.value);
 });
 search.addEventListener("input", renderArtifacts);
+searchToggle.addEventListener("click", toggleSearch);
 
 $("#show-library").addEventListener("click", () => setView(1, true));
 $("#show-upload").addEventListener("click", () => setView(0, true));
@@ -204,55 +208,6 @@ $(".skip-link").addEventListener("click", (event) => {
   event.preventDefault();
   setView(1, true);
 });
-
-window.addEventListener("wheel", (event) => {
-  if (state.isAnimating || Math.abs(event.deltaY) < 12) return;
-
-  if (state.view === 0 && event.deltaY > 0) {
-    const uploadHasMore = uploadView.scrollHeight > uploadView.clientHeight
-      && uploadView.scrollTop + uploadView.clientHeight < uploadView.scrollHeight - 1;
-    if (uploadHasMore) return;
-    event.preventDefault();
-    setView(1);
-    return;
-  }
-
-  if (state.view === 1 && event.deltaY < 0) {
-    const insideList = event.target instanceof Element && event.target.closest("#folio-list");
-    if (insideList && list.scrollTop > 0) return;
-    event.preventDefault();
-    setView(0);
-  }
-}, { passive: false });
-
-window.addEventListener("keydown", (event) => {
-  const interactive = event.target instanceof Element
-    && event.target.matches("input, button, a, textarea, select");
-  if (interactive) return;
-
-  const downKeys = ["ArrowDown", "PageDown", "End", " "];
-  const upKeys = ["ArrowUp", "PageUp", "Home"];
-  if (state.view === 0 && downKeys.includes(event.key)) {
-    event.preventDefault();
-    setView(1);
-  } else if (state.view === 1 && upKeys.includes(event.key) && list.scrollTop === 0) {
-    event.preventDefault();
-    setView(0);
-  }
-});
-
-window.addEventListener("touchstart", (event) => {
-  state.touchStartY = event.touches[0]?.clientY ?? 0;
-  state.touchStartedInList = event.target instanceof Element && Boolean(event.target.closest("#folio-list"));
-}, { passive: true });
-
-window.addEventListener("touchend", (event) => {
-  const endY = event.changedTouches[0]?.clientY ?? state.touchStartY;
-  const delta = endY - state.touchStartY;
-  if (Math.abs(delta) < 48 || state.isAnimating) return;
-  if (state.view === 0 && delta < 0) setView(1);
-  if (state.view === 1 && delta > 0 && (!state.touchStartedInList || list.scrollTop === 0)) setView(0);
-}, { passive: true });
 
 for (const eventName of ["dragenter", "dragover"]) {
   dropZone.addEventListener(eventName, (event) => {
