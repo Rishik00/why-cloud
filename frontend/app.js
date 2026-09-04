@@ -26,6 +26,7 @@ function setView(nextView, moveFocus = false) {
   if (nextView === state.view) return;
   state.view = nextView;
   deck.dataset.view = String(nextView);
+  document.body.dataset.view = nextView === 0 ? "upload" : "folio";
   uploadView.hidden = nextView !== 0;
   libraryView.hidden = nextView !== 1;
   window.scrollTo({ top: 0, behavior: "instant" });
