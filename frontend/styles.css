@@ -4,6 +4,8 @@
   --hero: "DM Sans", Aptos, "Segoe UI", system-ui, sans-serif;
   --body: Aptos, "Segoe UI", system-ui, sans-serif;
   --utility: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  --page-top: clamp(22px, 4vw, 52px);
+  --nav-height: 39px;
   --swipe: 680ms cubic-bezier(.76, 0, .24, 1);
 }
 
@@ -228,7 +230,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .page-switch {
   position: absolute;
   z-index: 3;
-  top: clamp(22px, 4vw, 52px);
+  top: var(--page-top);
   right: clamp(22px, 6vw, 96px);
   display: flex;
   align-items: center;
@@ -248,7 +250,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .page-switch:hover svg { transform: translateX(4px); }
 
 .view-library {
-  padding: clamp(22px, 4vw, 52px) clamp(22px, 6vw, 96px);
+  padding: var(--page-top) clamp(22px, 6vw, 96px);
   font-family: var(--hero);
 }
 
@@ -264,6 +266,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  min-height: var(--nav-height);
   padding-bottom: 16px;
   border-bottom: 1px solid var(--black);
 }
@@ -501,6 +504,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .primary-button:focus-visible, .toast button:focus-visible, .folio-row:hover:focus-visible { outline-color: var(--white); }
 
 @media (max-width: 680px) {
+  :root { --page-top: 18px; }
   .view-upload { padding: 70px 16px 22px; }
   .upload-view-inner { gap: 22px; }
   .hero-copy h1 { font-size: clamp(48px, 15vw, 72px); }
@@ -513,8 +517,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .primary-button { min-height: 40px; padding: 0 11px 0 13px; }
   .primary-button span { max-width: 58px; line-height: 1.1; text-align: left; }
   .form-status { margin-top: 7px; }
-  .page-switch { top: 18px; right: 16px; }
-  .view-library { padding: 18px 16px; }
+  .page-switch { right: 16px; }
+  .view-library { padding-right: 16px; padding-left: 16px; }
   .library-heading { grid-template-columns: minmax(0, 1fr) 42px; align-items: end; gap: 12px; padding: 26px 0 18px; }
   .library-heading .folio-word, .library-heading .search-word { font-size: clamp(42px, 14vw, 58px); }
   .search-toggle svg { width: 17px; }
