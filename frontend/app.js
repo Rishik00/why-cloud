@@ -39,6 +39,7 @@ function toggleSearch() {
   const isOpen = searchToggle.getAttribute("aria-expanded") === "true";
   const nextOpen = !isOpen;
   searchToggle.setAttribute("aria-expanded", String(nextOpen));
+  searchToggle.setAttribute("aria-label", nextOpen ? "Close search" : "Search folios");
   libraryHeading.classList.toggle("is-searching", nextOpen);
   if (nextOpen) {
     window.setTimeout(() => search.focus(), 180);
@@ -201,6 +202,22 @@ slugInput.addEventListener("input", () => {
 });
 search.addEventListener("input", renderArtifacts);
 searchToggle.addEventListener("click", toggleSearch);
+
+window.addEventListener("keydown", (event) => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  const target = event.target;
+  const isEditing = target instanceof Element
+    && (target.matches("input, textarea, select") || target.closest("[contenteditable='true']"));
+  if (isEditing) return;
+
+  if (event.key === "ArrowRight" && state.view === 0) {
+    event.preventDefault();
+    setView(1, true);
+  } else if (event.key === "ArrowLeft" && state.view === 1) {
+    event.preventDefault();
+    setView(0, true);
+  }
+});
 
 $("#show-library").addEventListener("click", () => setView(1, true));
 $("#show-upload").addEventListener("click", () => setView(0, true));

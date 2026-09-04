@@ -6,6 +6,9 @@
     <meta name="description" content="A personal research folio stored on Cloudflare R2.">
     <title>Folio — Research, bound</title>
     <link rel="icon" href="/folio-mark.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
     <script src="/app.js" defer></script>
   </head>
@@ -14,6 +17,11 @@
 
     <main class="deck" id="deck" data-view="0">
       <section class="view view-upload" id="upload-view" aria-labelledby="hero-title" tabindex="-1">
+        <button class="page-switch page-switch-folio" id="show-library" type="button">
+          <span>Folio</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg>
+        </button>
+
         <div class="upload-view-inner">
           <header class="hero-copy">
             <h1 id="hero-title">Research, <em>bound.</em></h1>
@@ -55,10 +63,6 @@
           </form>
         </div>
 
-        <button class="view-switch" id="show-library" type="button">
-          <span>Browse folios</span>
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg>
-        </button>
       </section>
 
       <section class="view view-library" id="library" aria-labelledby="library-title" tabindex="-1" hidden>
@@ -77,15 +81,19 @@
           </div>
 
           <div class="library-heading">
-            <button class="search-toggle" id="search-toggle" type="button" aria-expanded="false" aria-controls="search-field">
+            <h2 id="library-title">
               <span class="search-word">Search</span>
-              <span class="folio-word" id="library-title">Folio</span>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
-            </button>
-            <label class="search-field" id="search-field">
-              <span class="sr-only">Search folios</span>
-              <input id="search" type="search" placeholder="Find a folio">
-            </label>
+              <span class="folio-word">Folio</span>
+            </h2>
+            <div class="search-tools">
+              <button class="search-toggle" id="search-toggle" type="button" aria-expanded="false" aria-controls="search-field" aria-label="Search folios">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+              </button>
+              <label class="search-field" id="search-field">
+                <span class="sr-only">Search folios</span>
+                <input id="search" type="search" placeholder="Find a folio">
+              </label>
+            </div>
           </div>
 
           <p class="sr-only" id="library-status" role="status" aria-live="polite"></p>

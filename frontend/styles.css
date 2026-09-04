@@ -2,6 +2,7 @@
   --black: #000;
   --white: #fff;
   --display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --hero: "DM Sans", Aptos, "Segoe UI", system-ui, sans-serif;
   --body: Aptos, "Segoe UI", system-ui, sans-serif;
   --utility: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
   --swipe: 680ms cubic-bezier(.76, 0, .24, 1);
@@ -23,7 +24,6 @@ body {
 }
 
 ::selection { color: var(--white); background: var(--black); }
-.primary-button::selection, .toast::selection { color: var(--black); background: var(--white); }
 
 button, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
@@ -73,14 +73,14 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 .hero-copy h1 {
   margin: 0;
-  font-family: var(--display);
-  font-size: clamp(58px, 7.7vw, 116px);
-  font-weight: 400;
-  line-height: .88;
-  letter-spacing: -.068em;
+  font-family: var(--hero);
+  font-size: clamp(54px, 7.1vw, 108px);
+  font-weight: 500;
+  line-height: .94;
+  letter-spacing: -.055em;
 }
 
-.hero-copy h1 em { font-weight: 400; }
+.hero-copy h1 em { font-weight: 500; }
 
 .hero-copy p {
   margin: 19px 0 0;
@@ -208,11 +208,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 .form-status.is-error { font-weight: 700; text-decoration: underline; opacity: 1; }
 
-.view-switch {
+.page-switch {
   position: absolute;
   z-index: 3;
-  left: 50%;
-  bottom: clamp(18px, 3.5vh, 38px);
+  top: clamp(22px, 4vw, 52px);
+  right: clamp(22px, 6vw, 96px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -225,11 +225,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   font-size: 9px;
   letter-spacing: .12em;
   text-transform: uppercase;
-  transform: translateX(-50%);
 }
 
-.view-switch svg { width: 19px; fill: none; stroke: currentColor; stroke-width: 1.2; transition: transform .2s ease; }
-.view-switch:hover svg { transform: translateX(4px); }
+.page-switch svg { width: 19px; fill: none; stroke: currentColor; stroke-width: 1.2; transition: transform .2s ease; }
+.page-switch:hover svg { transform: translateX(4px); }
 
 .view-library { padding: clamp(22px, 4vw, 52px) clamp(22px, 6vw, 96px); }
 
@@ -282,35 +281,52 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .library-stats dd { margin: 0; }
 
 .library-heading {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(280px, 40vw);
   align-items: flex-end;
-  justify-content: space-between;
   gap: 24px;
   padding: clamp(25px, 4vh, 42px) 0 22px;
 }
 
-.search-toggle {
+.library-heading h2 {
   display: flex;
   align-items: baseline;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+}
+
+.search-tools {
+  position: relative;
+  width: 100%;
+  height: 37px;
+}
+
+.search-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
   padding: 0;
   color: var(--black);
   background: transparent;
   border: 0;
   cursor: pointer;
-  font-family: var(--display);
-  text-align: left;
+  z-index: 2;
 }
 
-.search-toggle .folio-word,
-.search-toggle .search-word {
-  margin: 0;
+.library-heading .folio-word,
+.library-heading .search-word {
   font-size: clamp(52px, 7vw, 96px);
-  font-weight: 400;
   line-height: .9;
   letter-spacing: -.055em;
 }
 
-.search-toggle .search-word {
+.library-heading .search-word {
   max-width: 0;
   overflow: hidden;
   opacity: 0;
@@ -318,7 +334,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   transition: max-width 520ms cubic-bezier(.22, 1, .36, 1), opacity 280ms ease, transform 520ms cubic-bezier(.22, 1, .36, 1);
 }
 
-.search-toggle[aria-expanded="true"] .search-word {
+.library-heading.is-searching .search-word {
   max-width: 5em;
   margin-right: .18em;
   opacity: 1;
@@ -327,7 +343,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 .search-toggle svg {
   width: 19px;
-  margin-left: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.35;
@@ -338,10 +353,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .search-toggle:hover svg { opacity: 1; }
 
 .search-field {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   gap: 9px;
-  width: min(280px, 40vw);
+  width: 100%;
   padding: 8px 0;
   border-bottom: 1px solid var(--black);
   opacity: 0;
@@ -357,7 +374,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   transition-delay: 110ms, 70ms, 0s;
 }
 
-.search-field input { width: 100%; min-width: 0; color: var(--black); background: transparent; border: 0; outline: 0; }
+.search-field input { width: 100%; min-width: 0; padding-right: 44px; color: var(--black); background: transparent; border: 0; outline: 0; }
 
 .folio-list {
   border-top: 1px solid var(--black);
@@ -475,12 +492,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .primary-button { min-height: 40px; padding: 0 11px 0 13px; }
   .primary-button span { max-width: 58px; line-height: 1.1; text-align: left; }
   .form-status { margin-top: 7px; }
-  .view-switch { bottom: 10px; }
+  .page-switch { top: 18px; right: 16px; }
   .view-library { padding: 18px 16px; }
-  .library-heading { align-items: stretch; flex-direction: column; gap: 18px; padding: 26px 0 18px; }
-  .search-toggle .folio-word, .search-toggle .search-word { font-size: clamp(42px, 14vw, 58px); }
-  .search-toggle svg { width: 17px; margin-left: 12px; }
-  .search-field { width: 100%; }
+  .library-heading { grid-template-columns: minmax(0, 1fr) 42px; align-items: end; gap: 12px; padding: 26px 0 18px; }
+  .library-heading .folio-word, .library-heading .search-word { font-size: clamp(42px, 14vw, 58px); }
+  .search-toggle svg { width: 17px; }
+  .library-heading.is-searching .search-tools { grid-column: 1 / -1; width: 100%; }
+  .library-heading.is-searching { grid-template-columns: 1fr; }
   .folio-row { grid-template-columns: 34px minmax(0, 1fr) 42px; gap: 10px; min-height: 92px; }
   .folio-meta { display: none; }
   .open-mark > span:first-child { display: none; }
@@ -495,7 +513,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .field-pair { margin-top: 12px; }
   .publish-row { margin-top: 10px; }
   .form-status { min-height: 12px; margin-top: 5px; }
-  .view-switch span { display: none; }
+  .page-switch span { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
